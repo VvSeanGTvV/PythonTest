@@ -1,0 +1,49 @@
+1
+
+# Prompt the user for a number between 1 and 100
+number = int(input("Enter a number from 1 to 100: "))
+
+# Validate input using a while loop
+while number < 1 or number > 100:
+    print("INVALID number. Try again.")
+    number = int(input("Enter a number from 1 to 100: ")) # If failed to do so it loop back.
+
+# Thank the user for valid input
+print("Thank you for your input!")
+
+
+2
+
+# Initialize variables
+favorite_color = "orange"
+attempts = 1  # Variable to keep track of the number of attempts
+
+# Prompt the user to guess the favorite color
+guess = input("Guess my favorite color: ").lower()
+
+# Validate the guess
+while guess != favorite_color:
+    print("Incorrect, Try again.")
+    guess = input("Guess my favorite color: ").lower()
+    attempts += 1 # Add the attempts variable every time they failed.
+
+# Output the success message and number of attempts
+print(f"Correct! It took you {attempts} attempt(s) to guess the right color.")
+
+
+3
+
+# Initialize the sum variable
+total_sum = 0
+
+# Ask the user how many numbers they want to enter
+num_count = int(input("How many numbers would you like to sum? "))
+
+# Use a for loop to get numbers and calculate the sum
+for i in range(num_count):
+    number = int(input(f"Enter number {i+1}: "))
+    total_sum += number # Add everytime they entered a numeric value
+
+# Output the total sum
+print(f"The total sum of the numbers is: {total_sum}")
+

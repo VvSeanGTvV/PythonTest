@@ -1,0 +1,120 @@
+# Program 1
+name = input() # prompt a new name
+while not name.isalpha(): # checks if it is not alphabet
+  name = input() # prompt a new name
+print(name.capitalize()) # uppercase the first letter
+
+
+
+# Program 2
+count = 0 # initialize count
+sentence = input() # prompt a new sentence
+for letter in sentence: # loops through the new sentence
+  if letter in "aAeEiIoOuU": # if either of the letters contains "aAeEiIoOuU"
+    count = count + 1 # add 1 to count
+print(count) # print the total count
+
+
+# DISCLAIMER: even though it prompts to put a letter the user might accidentally put a whole phrase, where it might not work as intended! A revised can be found after Program 3
+# Program 3
+letter = input() # prompt a letter
+word = "antidisestablishmentarianism" # initialize word
+for char in word: # loops through the word string as array
+  if char == letter: # if the char is equal to letter
+    print(char) # print that specific character
+
+# Program 3 (REVISED)
+letter = input() # prompt a letter
+word = "antidisestablishmentarianism" # initialize word
+while len(letter) > 1 or len(letter) <= 0: # checks to make sure it is just letter not a whole phrase
+  letter = input() # prompt a new letter
+for char in word: # loops through the word string as array
+  if char == letter: # if the char is equal to letter
+    print(char) # print that specific character
+
+
+# DISCLAIMER: even though it prompts to put a letter the user might accidentally put a whole phrase, where it might not work as intended! A revised can be found after Program 4
+
+# Program 4
+letter1 = input() # prompt a letter1
+letter2 = input() # prompt a letter2
+alpha = "AbCdefGHiJKLmnoPqRsTUvwxyZ" # initialize alpha
+location1 = alpha.find(letter1.lower()) # returns the index of alpha to find letter1
+location2 = alpha.find(letter2.lower()) # returns the index of alpha to find letter2
+if location1 == -1: # if did not find (usually .find return -1 if it didn’t find the specific letter)
+  letter1 = letter1.upper() # uppercase letter1
+else: # else
+  letter1 = letter1.lower() # lowercase letter1
+if location2 == -1: # similar as location1 if and else statement
+  letter2 = letter2.upper() # uppercase letter2
+else:
+  letter2 = letter2.lower() # lowercase latter2
+alpha = alpha.replace(letter1, letter2) # replace every (first parameter) to (second parameter)
+print(alpha) # print resulting alpha string
+
+# Program 4 (REVISED)
+letter1 = input() # prompt a letter1
+while len(letter1) > 1 or len(letter1) <= 0: # checks to make sure it is just letter not a whole phrase
+  letter1 = input() # prompt a new letter1
+letter2 = input() # prompt a letter2
+while len(letter2) > 1 or len(letter2) <= 0: # checks to make sure it is just letter not a whole phrase
+  letter2 = input() # prompt a new letter2
+while letter2 == letter1: # loops until letter2 is not equal to letter 1
+  letter2 = input() # prompt a new letter2
+while letter2 == letter1: # loops until letter2 is not equal to letter 1
+  letter2 = input() # prompt a new letter2
+alpha = "AbCdefGHiJKLmnoPqRsTUvwxyZ" # initialize alpha
+location1 = alpha.find(letter1.lower()) # returns the index of alpha to find letter1
+location2 = alpha.find(letter2.lower()) # returns the index of alpha to find letter2
+if location1 == -1: # if did not find (usually .find return -1 if it didn’t find the specific letter)
+  letter1 = letter1.upper() # uppercase letter1
+else: # else
+  letter1 = letter1.lower() # lowercase letter1
+if location2 == -1: # similar as location1 if and else statement
+  letter2 = letter2.upper() # uppercase letter2
+else:
+  letter2 = letter2.lower() # lowercase latter2
+alpha = alpha.replace(letter1, letter2) # replace every (first parameter) to (second parameter)
+print(alpha) # print resulting alpha string
+
+
+More descriptive function for Strings
+x = "... o! mr. wee IS cool"
+
+print(x.count("e")) # returns how many (first parameter) has occurred in the string
+
+print(x.replace(" ", "d")) # replaces every (first parameter) to (second parameter)
+
+print(x.capitalize()) # Same as .title(), except only the first letter gets capitalized
+
+print(x.find("o")) # finds the first occuring string (first parameter)
+
+print(x.rfind("o")) # finds the last occuring string (first parameter) (opposite of .find())
+
+print(x.title()) # capitalize every first word, and make all other words lowercased
+
+print(x.upper()) # All letters are uppercased
+
+print(x.lower()) # All letters are lowercased
+
+print(x.isdigit()) # returns if this string is only digit (cannot contain any letters, whitespace, or special characters)
+
+Extra functions:
+
+print(len(x)) # returns the length of the string
+
+print(x.endswith(“cool”)) # returns if the string ends with (first parameter)
+
+print (x.strip()) # returns an string that has removed leading and trailing whitespace.
+
+print(x.split(“ “) # returns a substring depending on the (first parameter)
+
+print(x.join(“ very much!”) # joins the string with (first parameter) this is the same as print(x + “very much!”)
+
+print(x.format()) # format every variable like {variable} to a string this is the same as print(f”string {variable}”)
+
+print(x.startswith(“.”)) # returns if the string starts with (first parameter)
+
+print(x.isalnum()) # same as x.isdigit()
+
+print(x.isalpha()) # returns if the string is only letters (cannot contain any numerical digit, whitespace, or special characters)

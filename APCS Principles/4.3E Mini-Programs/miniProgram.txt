@@ -1,0 +1,71 @@
+Note (some optimizing to think about Python)!
+Each print might contain the letter -> f !
+The f is meant to format variables in a string! yes, you could also technically do this:
+print(“Yes, “ + str(num1) + “ cannot be divided by ” + str(num2) + “ .”
+But it is kind of slightly unoptimized.
+The str() converts the existing object to a string.
+
+If (variable) in [array]: this method allows to check multiple objects in one go without relying on for loop or a very long boolean:
+
+If (variable1 == variable1 or variable2 == variable2… etc):
+Or
+Ans = [“t”, “true”, “f”, “false”, etc…]
+For i in range(5):
+	If (usr == Ans[i]):
+		return True
+return False
+
+
+
+“Divisible”
+
+# Prompt the user to enter their name
+name = input("Enter your name: ")
+
+# Ask the user for the first integer
+num1 = int(input(f"Hello, {name}! Please enter the first integer: "))
+
+# Ask the user for the second integer
+num2 = int(input(f"Now, {name}, please enter the second integer: "))
+
+# Check if the first number is divisible by the second number
+if num1 % num2 == 0:
+    print(f"Yes, {num1} cannot be divided by {num2}.")
+else:
+    print(f"No, {num1} cannot be divided by {num2}.")
+
+
+
+“Geometry”
+import random
+import math
+
+# Prompt the user for a small decimal number
+small_decimal = float(input("Enter a small decimal number (lower bound): "))
+
+# Prompt the user for a large decimal number
+large_decimal = float(input("Enter a large decimal number (upper bound): "))
+
+# Generate a random decimal number between the small and large decimal values
+random_radius = random.uniform(small_decimal, large_decimal)
+
+# Calculate the volume of a sphere using the formula V = (4/3) * pi * r^3
+volume = (4/3) * math.pi * random_radius**3
+
+# Output the radius and the volume
+print(f"The randomly generated radius is: {random_radius:.4f}")
+print(f"The volume of the sphere with that radius is: {volume:.4f}")
+
+
+
+“Quiz”
+answer = input("Is Python Easy? True or False: ")
+
+# Check the user's response
+if answer in ['true', 'True', 'T', 't']:
+    print("Correct! Python is easy!")
+elif answer in ['false', 'False', 'F', 'f']:
+    print("Incorrect. Python is easy.")
+else:
+    print("Invalid answer. Please enter True, False, T, t, F, or f.")
+
