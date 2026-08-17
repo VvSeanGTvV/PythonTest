@@ -3,13 +3,13 @@ from karel.stanfordkarel import *
 # make karel turn right :]
 
 
-def turn_right_safe():
+def turn_right_safe(): # turns whenever right slot is free
      if right_is_clear():
             turn_left()
             turn_left()
             turn_left()
             
-def turn_left_safe():
+def turn_left_safe(): # turns whenever left slot is free
     if left_is_clear():
             turn_left()
 
