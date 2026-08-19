@@ -1,7 +1,8 @@
 from karel.stanfordkarel import *
 # exercise turning right w/ new function
-# make karel turn right :]
-# if function practice, learning with new define/func to create
+# function / define moment
+# make turn right
+# all movement is safe no fail
 
 
 def turn_right_safe(): # turns whenever right slot is free
