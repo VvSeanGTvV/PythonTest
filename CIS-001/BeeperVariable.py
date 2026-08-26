@@ -19,7 +19,7 @@ def main():
     put_beeper()
     # --- Where it ends
     
-    # --- Return to Original
+    # --- Return to Original (except in one row section it inverts to other side)
     while front_is_clear():
         move()
     turn_right()
@@ -39,9 +39,11 @@ def mid_point(): # we use the beepers as our step counter
         turn_left()
         if beepers_present(): # we offset by a space acting as +1 to the variable
             pick_beeper()
-            move()
+            if front_is_clear():
+                move()
             put_beeper()
-        move()
+        if front_is_clear():
+            move()
         
 def set_position_to_beeper(): # the beepers become our set position
     while front_is_clear() and no_beepers_present():
