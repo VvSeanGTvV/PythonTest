@@ -24,7 +24,7 @@ def main():
     # (Shown by Ben Allen)
     # Problem 5 (Challenge) — Find the Midpoint (No Beeper Help) 
     # Basically we want the function to time out or in this case becomes
-    # our try {} catch {} things. Repeating an exact code many times lead
+    # our break. Repeating an exact code many times lead
     # to a timeout, acting as our break.
     mid_point()
     turn_right()
