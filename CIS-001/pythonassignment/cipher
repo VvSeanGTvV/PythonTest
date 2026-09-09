@@ -1,0 +1,94 @@
+
+#######################
+# Cipher Module Class #
+#     VvSeanGtvV      #
+#                     #
+#    09 / 09 / 2026   #
+#######################
+
+class cipherModule():
+    Shift = 0
+    def __init__(self, shift:int):
+        self.Shift = shift
+
+    def encode(self, entry:str):
+        EncodedMessage = ""
+        for i in range(len(entry)):
+            readyShift = 0
+            letter = entry[i % len(entry)]
+            if (letter.islower() or letter.isupper() and (ord(letter) > 65)):
+                readyShift = self.Shift
+                #EncodedMessage = EncodedMessage + chr(((ord(entry[i % len(entry)]) - ord('a') + readyShift % 26 + ord('a'))))
+            else:
+                EncodedMessage = EncodedMessage + entry[i % len(entry)]
+        return EncodedMessage
+    
+    def decode(self, encoded:str):
+        DecodedMessage = ""
+        for i in range(len(encoded)):
+            readyShift = 0
+            letter = encoded[i % len(encoded)]
+            if ((letter.islower() or letter.isupper()) and (ord(letter) > 65)):
+                readyShift = self.Shift
+                #if (letter.isupper()): readyShift = readyShift - 6
+                code = chr(ord(encoded[i % len(encoded)]) + ord('a') - readyShift % 26 - ord('a'))
+                offset = 0
+                if (letter.isupper()): 
+                    leftover = 0
+                    if (ord(code) < 65): 
+                        leftover = -(65 - ord(code))
+                        offset
+                        code = chr(90 - leftover + offset)
+                    if (ord(code) > 90): 
+                        leftover = ord(code) - 90 
+                        code = chr(65 + leftover + offset)
+                else:
+                    leftover = 0
+                    if (ord(code) < 97): 
+                        leftover = -(97 - ord(code))
+                        code = chr(122 - leftover + offset)
+                    if (ord(code) > 122): 
+                        leftover = ord(code) - 122
+                        code = chr(97 + leftover + offset)
+
+                DecodedMessage = DecodedMessage + code
+                #DecodedMessage = DecodedMessage + chr(((ord(encoded[i % len(encoded)]) + ord('a') - readyShift % 26 - ord('a'))))
+            else:
+                DecodedMessage = DecodedMessage + encoded[i % len(encoded)]
+        return DecodedMessage
+
+def main():
+    print("-"*32)
+    print("Cipher Module Class")
+    shifter = input("Shift by : ")
+    cipherEpic = cipherModule(int(shifter))
+
+    print("-"*32)
+    mode = input("[E]ncode | [D]ecode \n")
+
+    print("-"*32)
+    shiftStatus= "~"
+    if (int(shifter) > 0):
+        shiftStatus = "+"
+    elif (int(shifter) < 0):
+        shiftStatus = ""
+    
+    if (mode.lower() == "e"):
+        data = input("(" + shiftStatus + str(shifter) + " Shift) > ")
+        newEncode = cipherEpic.encode(data)
+        print("Encoded Cipher: " + newEncode)
+    elif (mode.lower() == "d"):
+        retry = input("Decode Times: ")
+        data = input("(" + shiftStatus + str(shifter) + " Shift + " + str(retry) + ") > ")
+        for i in range(int(retry)+1):
+            print("-"*32)
+            newCipher = cipherModule(int(shifter)+i)
+            if (int(shifter)+i > 0):
+                shiftStatus = "+"
+            elif (int(shifter)+i < 0):
+                shiftStatus = ""
+            newDecode = newCipher.decode(data)
+            print("Decoded Cipher (w/ "+ shiftStatus + str(int(shifter)+i) +" ): " + newDecode)
+    main()
+
+main()
