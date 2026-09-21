@@ -11,7 +11,7 @@ import random
 
 # CHANGELOG
 # 09 / 16 / 2026 - Color Update lol
-
+# 09 / 21 / 2026 - Crafting W.I.P.
 
 ## PYTHON CLASS
 class Vector2:
@@ -28,7 +28,8 @@ class TileMap:
         "\033[1;30;40m ", #SPACE
         "\033[1;32;40mT", #TREE
         "\033[1;31;40mS", #STONE
-        "\033[1;36;40mO" #ORE
+        "\033[1;36;40mO", #ORE
+        "\033[1;32;40mW", #TREE
     ]
     def __init__(self):
         pass
@@ -72,7 +73,7 @@ class Player:
     Standing: int = 2
     Data: Map = NotImplemented
     Position: Vector2 = Vector2()
-    Inventory = [0, 0, 0, 0] #Log, Stone, Ore, Ingot
+    Inventory = [0, 0, 0, 0, 0] #Log, Stone, Ore, Ingot, Workbench
     def __init__(self, Data: Map):
         self.Data = Data
         self.Position = Vector2(Data.MapSize//2, Data.MapSize//2)
@@ -97,34 +98,52 @@ build = "09162026"
 Data = Map(32)
 Render = Renderer(Data)
 Plr = Player(Data)
+UIArea: int = 0
 
 def UIPrint(IN: str, Length:int, Offset:int = 1):
     UIS:str = IN
     BarLength: int = (Length * Offset) - 4
     print("\033[1;37;47m "+UIS+("\033[0m "*(BarLength-len(UIS))+"\033[1;37;47m \033[1;37;40m")) 
 
-def UI():
+def UI(UI:int = 0):
     BarSize: int = 32
+
     print("\033[1;30;40m")
-    print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
-    UIPrint(f"\033[1;33;40m Pyt\033[1;36;40mhon\033[1;37;40m Grid Game | {build} \033[1;37;40m ", BarSize)
-    UIPrint(f"\033[1;37;40m Standing on: {Data.TileMapData.Map[Plr.Standing]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;32;40m Log\033[1;37;40m | x{Plr.Inventory[0]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;36;40m Ore\033[1;37;40m | x{Plr.Inventory[2]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;31;40m Stone\033[1;37;40m | x{Plr.Inventory[1]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;34;40m Ingot\033[1;37;40m | x{Plr.Inventory[3]}\033[1;37;40m", BarSize, 2)
-    print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
+    if (UI == 0):
+        print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
+        UIPrint(f"\033[1;33;40m Pyt\033[1;36;40mhon\033[1;37;40m Grid Game | {build} \033[1;37;40m ", BarSize)
+        UIPrint(f"\033[1;37;40m Standing on: {Data.TileMapData.Map[Plr.Standing]}\033[1;37;40m", BarSize, 2)
+        UIPrint(f"\033[1;32;40m Log\033[1;37;40m | x{Plr.Inventory[0]}\033[1;37;40m", BarSize, 2)
+        UIPrint(f"\033[1;36;40m Ore\033[1;37;40m | x{Plr.Inventory[2]}\033[1;37;40m", BarSize, 2)
+        UIPrint(f"\033[1;31;40m Stone\033[1;37;40m | x{Plr.Inventory[1]}\033[1;37;40m", BarSize, 2)
+        UIPrint(f"\033[1;34;40m Ingot\033[1;37;40m | x{Plr.Inventory[3]}\033[1;37;40m", BarSize, 2)
+        print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
+    if (UI == 3):
+        print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
+        UIPrint(f"\033[1;33;40m Pyt\033[1;36;40mhon\033[1;37;40m Grid Game | {build} \033[1;37;40m ", BarSize)
+        UIPrint(f"\033[1;37;40m Standing on: {Data.TileMapData.Map[Plr.Standing]}\033[1;37;40m", BarSize, 2)
+        UIPrint(f"\033[1;32;40m Workbench\033[1;37;40m | x{Plr.Inventory[0]} [1] \033[1;37;40m", BarSize, 2)
+        UIPrint(f"\033[1;31;40m Furnace\033[1;37;40m | x{Plr.Inventory[1]} [2] \033[1;37;40m", BarSize, 2)
+        print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
+    if (UI == 1):
+        print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
+        UIPrint(f"\033[1;37;40m Crafting Station \033[1;37;40m ", BarSize)
+        UIPrint(f"\033[1;32;40m Workbench\033[1;37;40m [1] \033[1;37;40m", BarSize, 2)
+        print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
 
 def main():
+    # GLOBAL
+    global UIArea
+
     while True:
         # Clears the screen dynamically across all major systems
         os.system('cls' if os.name == 'nt' else 'clear')
         Data.SetTileMap(Plr.Position.x, Plr.Position.y, 1)
         Render.render()
-        UI()
+        if (UIArea <= 0): UI()
+        if (UIArea > 0): UI(UIArea)
 
-        wasdMap = ["w", "a", "s", "d", "m"]
-        controlUI = "W A S D"
+        controlUI = "W A S D C I"
         if (Plr.Standing > 2): controlUI += " M"
         control = input(controlUI+"\n").lower()
         for i in range(0, len(control)):
@@ -138,5 +157,11 @@ def main():
                 Plr.move(0, 1)
             if (control[i] == "m" and Plr.Standing > 2):
                 Plr.mine()
+            if control[i] == "c":
+                if (UIArea <= 0): UIArea = 1
+                elif (UIArea > 0): UIArea = 0
+            if control[i] == "i":
+                if (UIArea <= 0): UIArea = 3
+                elif (UIArea > 0): UIArea = 0
 
 main()
