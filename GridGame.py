@@ -72,7 +72,7 @@ class Player:
     Standing: int = 2
     Data: Map = NotImplemented
     Position: Vector2 = Vector2()
-    Inventory = [0, 0, 0, 0]
+    Inventory = [0, 0, 0, 0] #Log, Stone, Ore, Ingot
     def __init__(self, Data: Map):
         self.Data = Data
         self.Position = Vector2(Data.MapSize//2, Data.MapSize//2)
@@ -109,10 +109,10 @@ def UI():
     print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
     UIPrint(f"\033[1;33;40m Pyt\033[1;36;40mhon\033[1;37;40m Grid Game | {build} \033[1;37;40m ", BarSize)
     UIPrint(f"\033[1;37;40m Standing on: {Data.TileMapData.Map[Plr.Standing]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;32;40m Log\033[1;37;40m  | x{Plr.Inventory[0]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;36;40m Ore\033[1;37;40m  | x{Plr.Inventory[2]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;31;40m Stone\033[1;37;40m  | x{Plr.Inventory[1]}\033[1;37;40m", BarSize, 2)
-    UIPrint(f"\033[1;34;40m Ingot\033[1;37;40m  | x{Plr.Inventory[3]}\033[1;37;40m", BarSize, 2)
+    UIPrint(f"\033[1;32;40m Log\033[1;37;40m | x{Plr.Inventory[0]}\033[1;37;40m", BarSize, 2)
+    UIPrint(f"\033[1;36;40m Ore\033[1;37;40m | x{Plr.Inventory[2]}\033[1;37;40m", BarSize, 2)
+    UIPrint(f"\033[1;31;40m Stone\033[1;37;40m | x{Plr.Inventory[1]}\033[1;37;40m", BarSize, 2)
+    UIPrint(f"\033[1;34;40m Ingot\033[1;37;40m | x{Plr.Inventory[3]}\033[1;37;40m", BarSize, 2)
     print("\033[1;37;47m "*BarSize + "\033[1;37;40m")
 
 def main():
