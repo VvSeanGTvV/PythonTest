@@ -21,7 +21,7 @@ class Board:
             for x in range(size):
                 self.BoardData[y].append(" ")
     
-    def placeXO(self, player:chr, x:int, y:int):
+    def placePlayer(self, player:chr, x:int, y:int):
         """
         Places the player on the given position, though first checked if the slot is empty
         Returns whether it was valid, otherwise false if it invalid
@@ -83,6 +83,15 @@ class Board:
             if (playerToCheck == self.BoardData[y][(self.BoardSize-1)-y]): dCount += 1
             else: dCount = 0
         return (dCount >= self.BoardSize)
+    
+class RobotBoard:
+    PredictionX: int = 0
+    PredictionY: int = 0
+    def __init__(self):
+        pass
+
+    def CalculateMove(self, board:Board):
+        pass
 
 def RenderBoard(board:Board):
     for y in range(len(board.BoardData)):
@@ -91,10 +100,11 @@ def RenderBoard(board:Board):
             BoardRenderY = BoardRenderY + f"[{board.BoardData[y][x]}]"
         print(BoardRenderY)
 
+Robot = RobotBoard()
 BoardGame = Board(3) # Create a class of 3x3 grid list
 
 PlayerTurn = 0
-def play_game():
+def play_game(botGame:bool=False):
     print("")
     global PlayerTurn # This is usually we make a variable global so that every outside function can reach the unreachable variable
 
@@ -119,7 +129,7 @@ def play_game():
 
     hasWinner: bool = False
     if (not DoNotChangeTurn): 
-        DoNotChangeTurn = not BoardGame.placeXO(Player, row, col)
+        DoNotChangeTurn = not BoardGame.placePlayer(Player, row, col)
         if (not DoNotChangeTurn): 
             PlayerTurn += 1
 
