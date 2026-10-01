@@ -94,11 +94,13 @@ class RobotBoard:
         pass
 
 def RenderBoard(board:Board):
-    for y in range(len(board.BoardData)):
+    for y in range(len(board.BoardData)-1):
+        print("+---"*(len(board.BoardData)-1) + "+")
         BoardRenderY: str = ""
         for x in range(len(board.BoardData[y])):
-            BoardRenderY = BoardRenderY + f"[{board.BoardData[y][x]}]"
-        print(BoardRenderY)
+            BoardRenderY = BoardRenderY + f"| {board.BoardData[y][x]} "
+        print(f"{BoardRenderY}|")
+    print("+---"*(len(board.BoardData)-1) + "+")
 
 Robot = RobotBoard()
 BoardGame = Board(3) # Create a class of 3x3 grid list
