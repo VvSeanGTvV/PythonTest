@@ -8,6 +8,7 @@
 
 # Changelog:
 # 10 / 04 / 2026 - AI MinMax Test
+# 10 / 05 / 2026 - AI MinMax Finalized + ton of bugfix
 
 class Board:
     BoardCapacity: int = 0
@@ -66,10 +67,13 @@ class Board:
         """
         playerToCheck: str = player
         yCount:int = 0
-        for y in range(len(self.BoardData)-1):
-            if (playerToCheck == self.BoardData[y][0]): yCount += 1
-            else: yCount = 0
-        return (yCount >= self.BoardSize)
+        for x in range(self.BoardSize):
+            for y in range(len(self.BoardData)-1):
+                
+                if (playerToCheck == self.BoardData[y][x]): yCount += 1
+                else: yCount = 0
+            if (yCount >= self.BoardSize): return True
+        return False
 
     def WinnerByDiagonal(self, player:chr):
         """
@@ -97,6 +101,7 @@ class RobotBoard:
 
     def CalculateMove(self, board:Board):
         bestScore: float = float("-inf")
+        bestMove = None
 
         for y in range(board.BoardSize):
             for x in range(board.BoardSize):
@@ -105,11 +110,12 @@ class RobotBoard:
                     board.BoardCapacity -= 1
 
                     score: float = self.MinMax(board, False)
+                    #print("TESTING: ", x, y, score)
 
                     board.BoardData[y][x] = " "
                     board.BoardCapacity += 1
                     
-                    if score > bestScore:
+                    if score is not None and score > bestScore:
                         bestScore = score
                         bestMove = (x, y)
 
@@ -117,6 +123,7 @@ class RobotBoard:
             self.PredictionX = bestMove[0]
             self.PredictionY = bestMove[1]
 
+            #print(f"AI chooses move at {bestMove} with score {bestScore}")
             return bestMove[0], bestMove[1]
     
     def SetPlayer(self, player:chr):
@@ -146,6 +153,22 @@ class RobotBoard:
 
                         bestScore: float = max(bestScore, score)
             return bestScore
+        else:
+            bestScore: float = float("inf")
+
+            for y in range(board.BoardSize):
+                for x in range(board.BoardSize):
+                    if board.isEmptySlot(x, y):
+                        board.BoardData[y][x] = self.BotChr
+                        board.BoardCapacity -= 1
+
+                        score: float = self.MinMax(board, True)
+
+                        board.BoardData[y][x] = " "
+                        board.BoardCapacity += 1
+
+                        bestScore: float = min(bestScore, score)
+            return bestScore
 
 def RenderBoard(board:Board):
     for y in range(len(board.BoardData)-1):
@@ -156,13 +179,25 @@ def RenderBoard(board:Board):
         print(f"{BoardRenderY}|")
     print("+---"*(len(board.BoardData)-1) + "+")
 
+# --- FUNCTION ---
+
+BotGameMode = False
+PlayerTurn = 0
+
+try: # basically try and catch, useful to actually not crash when inputed wrong
+    b = input(f"Bot? [Y] [N]\n")
+    if (b.lower() == "y" or b.lower() == "yes" or b.lower() == "ye" or b.lower() == "true" or b == 1): BotGameMode = True
+    if (b.lower() == "n" or b.lower() == "no" or b.lower() == "false" or b == 0): BotGameMode = False
+except (Exception, ValueError) as e:
+    print(f"Invalid? {e}")
+
 Robot = RobotBoard()
 BoardGame = Board(3) # Create a class of 3x3 grid list
 
-PlayerTurn = 0
-def play_game(botGame:bool=True):
+def play_game():
     print("")
     global PlayerTurn # This is usually we make a variable global so that every outside function can reach the unreachable variable
+    global BotGameMode
 
     RenderBoard(BoardGame) # Renders the board
 
@@ -175,18 +210,23 @@ def play_game(botGame:bool=True):
     DoNotChangeTurn: bool = False # We need to not change turn when user fails to input the numbers
     
     print(f"Player {Player}'s Turn")
-    if botGame and PlayerTurn != player:
+    if BotGameMode and PlayerTurn != player:
         Robot.SetPlayer(PlayerList[player])
         Robot.SetBot(Player)
-
-        row, col = Robot.CalculateMove(BoardGame)
-    else:
         try: # basically try and catch, useful to actually not crash when inputed wrong
-            row = int(input("Row (0, 1, or 2): "))
-            col = int(input("Column (0, 1, or 2): "))
+            row, col = Robot.CalculateMove(BoardGame)
         except Exception as e:
             DoNotChangeTurn = True
             print(f"No Value/{e}")
+    else:
+        try: # basically try and catch, useful to actually not crash when inputed wrong
+            row = int(input(f"Row (0 -> {BoardGame.BoardSize-1}): "))
+            col = int(input(f"Column (0 -> {BoardGame.BoardSize-1}): "))
+            if (row > BoardGame.BoardSize-1): raise ValueError
+            if (col > BoardGame.BoardSize-1): raise ValueError
+        except (Exception, ValueError) as e:
+            DoNotChangeTurn = True
+            print(f"Invalid Move! {e}")
 
     hasWinner: bool = False
     if (not DoNotChangeTurn): 
