@@ -1,3 +1,5 @@
+import random
+
 ##########################
 #                        #
 #      Tic Tac Toe       #
@@ -47,6 +49,15 @@ class Board:
         Returns if the position given is a ' ' or just empty
         """
         return self.BoardData[y][x] == " "
+    
+    def CleanBoard(self):
+        """
+        Clean up the board, basically empty it out.
+        """
+        for y in range(self.BoardSize):
+            for x in range(self.BoardSize):
+                self.BoardData[y][x] = ' '
+        self.BoardCapacity = self.BoardSize*self.BoardSize
     
     def WinnerByRow(self, player:chr):
         """
@@ -205,7 +216,7 @@ def play_game():
     player: int = 0
     row: int = 0
     col: int = 0
-    PlayerList = ['X', 'O']
+    PlayerList = ['X', 'O'] # Can be adjusted to have multiple players/bots
     Player: chr = PlayerList[PlayerTurn]
     DoNotChangeTurn: bool = False # We need to not change turn when user fails to input the numbers
     
@@ -217,7 +228,7 @@ def play_game():
             row, col = Robot.CalculateMove(BoardGame)
         except Exception as e:
             DoNotChangeTurn = True
-            print(f"No Value/{e}")
+            print(f"Invalid Move! {e}")
     else:
         try: # basically try and catch, useful to actually not crash when inputed wrong
             row = int(input(f"Row (0 -> {BoardGame.BoardSize-1}): "))
@@ -236,12 +247,21 @@ def play_game():
 
     # WINNER FUNCTIONALITY
     hasWinner = BoardGame.WinnerByRow(Player) or BoardGame.WinnerByCol(Player) or BoardGame.WinnerByDiagonal(Player)
+    if (hasWinner): PlayerTurn = random.randint(0, len(PlayerList)-1)
     if (PlayerTurn > len(PlayerList)-1): PlayerTurn = 0
 
     if (hasWinner): print(f"Player {Player} is the Winner!")
     elif (BoardGame.BoardCapacity <= 0): print("Tie!")
     else: play_game() 
-    pass
+    
+    try: # basically try and catch, useful to actually not crash when inputed wrong
+        b = input(f"Bot? [Y] [N]\n")
+        if (b.lower() == "y" or b.lower() == "yes" or b.lower() == "ye" or b.lower() == "true" or b == 1): BotGameMode = True
+        if (b.lower() == "n" or b.lower() == "no" or b.lower() == "false" or b == 0): BotGameMode = False
+    except (Exception, ValueError) as e:
+        print(f"Invalid? {e}")
+    BoardGame.CleanBoard()
+    play_game()
 
 if (__name__ == "__main__"):
     play_game()
