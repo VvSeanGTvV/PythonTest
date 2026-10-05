@@ -182,6 +182,9 @@ class RobotBoard:
             return bestScore
 
 def RenderBoard(board:Board):
+    """
+    Renders the whole board that is dynamic to size.
+    """
     for y in range(len(board.BoardData)-1):
         print("+---"*(len(board.BoardData)-1) + "+")
         BoardRenderY: str = ""
