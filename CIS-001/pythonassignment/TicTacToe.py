@@ -8,7 +8,7 @@
 
 # Changelog:
 # 10 / 04 / 2026 - AI MinMax Test
-# 10 / 05 / 2026 - AI MinMax Finalized + ton of bugfix
+# 10 / 05 / 2026 - AI MinMax Finalized + Bugfix
 
 class Board:
     BoardCapacity: int = 0
@@ -237,9 +237,10 @@ def play_game():
     # WINNER FUNCTIONALITY
     hasWinner = BoardGame.WinnerByRow(Player) or BoardGame.WinnerByCol(Player) or BoardGame.WinnerByDiagonal(Player)
     if (PlayerTurn > len(PlayerList)-1): PlayerTurn = 0
-    if (not hasWinner and BoardGame.BoardCapacity > 0): play_game() 
+
+    if (hasWinner): print(f"Player {Player} is the Winner!")
     elif (BoardGame.BoardCapacity <= 0): print("Tie!")
-    else: print(f"Player {Player} is the Winner!")
+    else: play_game() 
     pass
 
 if (__name__ == "__main__"):
