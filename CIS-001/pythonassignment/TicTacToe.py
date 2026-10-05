@@ -103,8 +103,6 @@ class Board:
         return (dCount >= self.BoardSize)
     
 class RobotBoard:
-    PredictionX: int = 0
-    PredictionY: int = 0
     PlayerChr: chr = ''
     BotChr: chr = ''
     def __init__(self):
@@ -131,9 +129,6 @@ class RobotBoard:
                         bestMove = (x, y)
 
         if bestMove is not None:
-            self.PredictionX = bestMove[0]
-            self.PredictionY = bestMove[1]
-
             #print(f"AI chooses move at {bestMove} with score {bestScore}")
             return bestMove[0], bestMove[1]
     
