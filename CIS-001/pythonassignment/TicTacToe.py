@@ -12,6 +12,7 @@ import random, os
 # 10 / 04 / 2026 - AI MinMax Test
 # 10 / 05 / 2026 - AI MinMax Finalized + Bugfix
 # 10 / 12 / 2026 - AI MinMax Fix, holy it is the unbeatable AI version + Clear Console + AI MinMax Multibot Support + Changed the ordering of the bot choice from begin and end to just beginning of the function
+# 10 / 14 / 2026 - Updated its docstring for anyone wondering what it do + Bugfix
 
 class Board:
     BoardCapacity: int = 0
@@ -19,7 +20,7 @@ class Board:
     BoardData = [[]]
     def __init__(self, size:int):
         """
-        Creates a board grid list
+        Creates a board in a grid list or array
         """
         self.BoardCapacity = size*size
         self.BoardSize = size
@@ -31,7 +32,8 @@ class Board:
     def placePlayer(self, player:chr, x:int, y:int):
         """
         Places the player on the given position, though first checked if the slot is empty
-        Returns whether it was valid, otherwise false if it invalid
+
+        Returns True when valid move, False when invalid move has made
         """
 
         if (x > self.BoardSize or y > self.BoardSize or y < 0 or x < 0):
@@ -40,7 +42,7 @@ class Board:
             self.BoardData[y][x] = player
             self.BoardCapacity -= 1
             return True
-        else: 
+        else:  # if for some reason none of the if and elif is true, this would result False for fallback
             return False
 
     def isEmptySlot(self, x:int, y:int):
@@ -51,7 +53,7 @@ class Board:
     
     def CleanBoard(self):
         """
-        Clean up the board, basically empty it out.
+        Clean up the board, basically empty out.
         """
         for y in range(self.BoardSize):
             for x in range(self.BoardSize):
@@ -60,6 +62,8 @@ class Board:
     
     def WinnerByRow(self, player:chr):
         """
+        0 -> BoardSize (X)
+
         Returns whether all rows have matching player
         """
         playerToCheck: chr = player
@@ -73,6 +77,8 @@ class Board:
 
     def WinnerByCol(self, player:chr):
         """
+        0 -> BoardSize (Y)
+
         Returns whether all columns have matching player
         """
         playerToCheck: str = player
@@ -87,6 +93,8 @@ class Board:
 
     def WinnerByDiagonal(self, player:chr):
         """
+        0 -> BoardSize (X & Y) including -X, +X, -Y, +Y
+
         Returns whether all diagonals have matching player
         """
         playerToCheck: str = player
@@ -100,17 +108,27 @@ class Board:
             if (playerToCheck == self.BoardData[y][(self.BoardSize-1)-y]): dCount += 1
             else: dCount = 0
         return (dCount >= self.BoardSize)
-    
-class RobotBoard:
-    Players = []
-    BotChr: chr = ''
+
+# The Robot Board is using an algorithm called Minimax
+# It's one of the most common algorithm used for 
+# Tic-Tac-Toe | Chess | Checkers | Connect Four
+# Mainly meant for two players but this was modified
+# to have go against multiple than just one person, dynamic to have many bots
+class RobotBoard: # I call him MinMAXX
+    Players = [] # Players or bots List which are up against
+    BotChr: chr = '' # The bot itself playing currently
     def __init__(self):
-        pass
+        """
+        Creates a Robot or Bot for the board
+        """
+        pass # no data needed
 
     def CalculateMove(self, board:Board):
         """
         Calculates its next best move, dependent on Mini Max Algorithm.
-        It goes against (extras AI, if any) and/or Player
+        It go against (extras AI, if any) and/or Player
+
+        Returns (x, y)
         """
         bestScore: float = float("-inf")
         bestMove = None
@@ -127,11 +145,11 @@ class RobotBoard:
                     board.BoardData[y][x] = " "
                     board.BoardCapacity += 1
                     
-                    if score is not None and score > bestScore:
+                    if score is not None and score > bestScore: # It only uses the best move when the score is actually good than the best score
                         bestScore = score
                         bestMove = (x, y)
 
-        if bestMove is not None:
+        if bestMove is not None: # Return the move back
             #print(f"AI chooses move at {bestMove} with score {bestScore}")
             return bestMove[0], bestMove[1]
     
@@ -144,17 +162,18 @@ class RobotBoard:
     
     def MinMax(self, board: Board, maximizing: bool):
         """
-        Maxmimizing -> The Bot who predicts its own next best move
-        Minimizing -> Player/Extra Bot prediction of next best move
+        Maxmimizing -> The Bot who predicts its own next best move based on scenario of the board (win = +1)
+        
+        Minimizing -> Player/Extra Bot prediction of next best move based on scenario of the board (lose = -1)
 
-        Returns a 1 which bots wins, or -1 whenever it lost
+        Returns a 1 when bot wins, -1 when lost, otherwise 0 when no winnable moves
         """
         if BoardGame.WinnerByRow(self.BotChr) or BoardGame.WinnerByCol(self.BotChr) or BoardGame.WinnerByDiagonal(self.BotChr): return 1
         for plr in self.Players: 
             if BoardGame.WinnerByRow(plr) or BoardGame.WinnerByCol(plr) or BoardGame.WinnerByDiagonal(plr): return -1
-        if board.BoardCapacity == 0: return 0
+        if board.BoardCapacity == 0: return 0 # Whenever there is no possible win for the player or bot
 
-        if maximizing:
+        if maximizing: # We try to make the bot win in the scenario of the board
             bestScore: float = float("-inf")
 
             for y in range(board.BoardSize):
@@ -168,7 +187,7 @@ class RobotBoard:
 
                         bestScore: float = max(bestScore, score)
             return bestScore
-        else:
+        else: # We try to make the player lose, likewise by predict its next move that could count a win
             bestScore: float = float("inf")
 
             for plr in self.Players:
@@ -202,7 +221,7 @@ CurrentGame = False
 BotGameMode = False
 PlayerTurn = 0
 Robot = RobotBoard()
-BoardGame = Board(3) # Create a class of 3x3 grid list
+BoardGame = Board(3) # Create a class of 3x3 grid list, also no the bots gets recursived when the board size is >3
 
 def play_game(Exeception = None):
     # This is usually we make a variable global so that every outside function can reach the unreachable variable
@@ -221,7 +240,7 @@ def play_game(Exeception = None):
     # -- GAME FUNCTION
     CurrentGame = True
     os.system('cls' if os.name == 'nt' else 'clear')
-    if (not Exeception is None): print(f"! Invalid Move !")
+    if (not Exeception is None): print("! Invalid Move !")
     RenderBoard(BoardGame) # Renders the board
 
     # PLAYER's Variable
@@ -247,9 +266,9 @@ def play_game(Exeception = None):
         try: # basically try and catch, useful to actually not crash when inputed wrong
             row = int(input(f"Row (0 -> {BoardGame.BoardSize-1}): "))
             col = int(input(f"Column (0 -> {BoardGame.BoardSize-1}): "))
-            if (row > BoardGame.BoardSize-1): raise ValueError
-            if (col > BoardGame.BoardSize-1): raise ValueError
-        except (Exception, ValueError) as e:
+            if (row > BoardGame.BoardSize-1): raise ValueError # we can force an error
+            if (col > BoardGame.BoardSize-1): raise ValueError # we can force an error
+        except (Exception, ValueError) as e: # any error goes here
             DoNotChangeTurn = True
             ErrorCode = e
             
@@ -261,15 +280,15 @@ def play_game(Exeception = None):
         else: ErrorCode = "no empty slot"
 
     # WINNER FUNCTIONALITY
-    hasWinner = BoardGame.WinnerByRow(Player) or BoardGame.WinnerByCol(Player) or BoardGame.WinnerByDiagonal(Player)
-    if (hasWinner): PlayerTurn = random.randint(0, len(PlayerList)-1)
-    if (PlayerTurn > len(PlayerList)-1): PlayerTurn = 0
+    hasWinner = BoardGame.WinnerByRow(Player) or BoardGame.WinnerByCol(Player) or BoardGame.WinnerByDiagonal(Player) # Checks whether the player/bot has won
+    if (hasWinner): PlayerTurn = random.randint(0, len(PlayerList)-1) # We randomize it at new game to somewhat have some turns on others
+    if (PlayerTurn > len(PlayerList)-1): PlayerTurn = 0 # Reset back when >len(PlayerList) to prevent out of range error
 
-    if (hasWinner): print(f"Player {Player} is the Winner!")
-    elif (BoardGame.BoardCapacity <= 0): print("Tie!")
-    else: play_game(ErrorCode) 
+    if (hasWinner): print(f"Player {Player} is the Winner!") # Print Winner
+    elif (BoardGame.BoardCapacity <= 0): print("Tie!") # if no space and no winner print Tie
+    else: play_game(ErrorCode)  # Keep going
     CurrentGame = False
-    pass
+    play_game()
 
 if (__name__ == "__main__"):
     play_game()
