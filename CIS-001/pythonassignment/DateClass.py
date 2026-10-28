@@ -15,6 +15,11 @@ from copy import copy
 #           as with the Time class in the slides
 
 class Date:
+    year: int = 1970
+    month: int = 1
+    day: int = 1
+
+    second: int = 0
     pass
 
 # usually this can also be used for anything that is initalizing the class
@@ -23,6 +28,7 @@ class Date:
 
 # note: `pass` means "this function doesn't do anything". Remove it when you've
 #       written the function.
+secondsInDay = 86400
 def make_date(year, month, day):
     """Makes a Date object with the given year, month, and day."""
     date = Date()
@@ -30,11 +36,13 @@ def make_date(year, month, day):
         date.year = int(year)
         date.month = int(month)
         date.day = int(day)
+
+        # We need a seconds acting as DATA, but this equation is NOT counting the Leap Years (since it breaks everything due to awkward increment
+        date.second = (int(day) * secondsInDay) + (int(month) * (avg_day_by_month(date) * secondsInDay)) + (int(year) * (get_all_days(date) * secondsInDay))
         return date
     except Exception as e:
         print(f"Failed to create Date due to: {e}")
         return None
-
 
 def date_to_iso(date):
     """Returns the date in ISO form, YYYY-MM-DD, like '2026-03-07'."""
@@ -71,22 +79,23 @@ def is_leap_year(year):
 
 def days_in_month(date):
     """Returns the number of days in the date's month."""
-    pass
+    return month_array(date, True)[date.month - 1] if (date.month - 1) < len(month_array(date, True)) else None
 
 
 def is_valid(date):
     """Returns True if the date is a real calendar date."""
+    return not (days_in_month(date) is None or date.day > days_in_month(date) or date.day <= 0)
     pass
 
 
 def same_date(date1, date2):
     """Returns True if the two dates have the same year, month, and day."""
-    pass
+    return days_until(today, tomorrow) == 0
 
 
 def is_after(date1, date2):
     """Returns True if date1 comes later on the calendar than date2."""
-    pass
+    return days_until(today, tomorrow) > 0
 
 
 def increment_date(date):
@@ -104,8 +113,32 @@ def days_until(date1, date2):
 
     Assumes date2 is the same as date1 or after it.
     """
-    pass
+    secondsUntil = date2.second - date1.second # Mostly rely on second as technically they are already converted
+    return round(secondsUntil / secondsInDay) # Rounds it up to result as Days
 
+
+# EXTRAS -for convenience sake
+def month_array(date, count_leap: bool = False): # mostly meant for the months in days
+    return [31, 29 if (is_leap_year(date.year) and count_leap) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+def get_all_days(date):
+    """
+    :param date: Only purpose to get the Year for Leap Year checking
+    :return: Returns the total Days in a Year
+    """
+    c = 0
+    for i in month_array(date):
+        c = c + i
+    return c
+
+def avg_day_by_month(date):
+    """
+    :param date: Only purpose to get the Year for Leap Year checking
+    :return: Returns an Average Days (~Day)
+    """
+    c = get_all_days(date)
+    c = c / len(month_array(date))
+    return c
 
 # Part 3: answer each question in the comments below it.
 
@@ -130,7 +163,7 @@ def days_until(date1, date2):
 #     Python doesn't raise an error. Why not? How would the bug show up later?
 #
 # A3. Even it despite being an misspelled, it'll create as a new attribute called 'dya'
-# than raising an error (cause tahts how it works), although if they try getting the "birthday.day"
+# than raising an error (cause thats how it works), although if they try getting the "birthday.day"
 # since there is no attribute called 'day' it'll result in an error. ('birthday' object has no attribute 'day')
 
 # Q4. days_until should leave date1 unchanged. What would go wrong for
@@ -139,6 +172,15 @@ def days_until(date1, date2):
 
 
 if __name__ == "__main__":
-    today = make_date(2026, 10, 26)
+    #UNIX = make_date(1970, 1, 1) <-- this was a temporary test calculation
+    today = make_date(2026, 10, 28)
+    tomorrow = make_date(2024, 2, 1)
     print_date(today)
+
+    # TESTING FUNCTIONS
     print(is_leap_year(today.year))
+    print(days_in_month(today))
+    print(days_until(today, today))
+    print(same_date(today, tomorrow))
+    print(is_after(today, tomorrow))
+    print(is_valid(today))
