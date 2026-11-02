@@ -185,12 +185,22 @@ def avg_day_by_month(date):
 #     print_date(c)
 #     print(a is b, a is c)
 #
-# Prediction:
-# Explanation:
+# A1 Prediction:
+# a makes the date of 2026-02-28
+# b is now a (or basically any changes to b affects to a)
+# c copies a value (meaning c is new value and copies value from a, also doesn't affects a when c is changed)
+# b increase the day. (a gets affected from it)
+# prints the a's date which is 2026-02-29 (refer back to any change to b affects to a)
+# prints the c's date which is 2026-02-28 (as it acts c a new date but copies the value from a)
+# prints a is b (which is true), a is c (which is false as c is a new date with a copied value from a)
+#
+# A1 Explanation:
+# 
 
 # Q2. same_date(x, y) can return True while x == y returns False.
 #     Give an example and explain why.
 #
+# A2.
 
 # Q3. Someone writes birthday.dya = 15 instead of birthday.day = 15.
 #     Python doesn't raise an error. Why not? How would the bug show up later?
@@ -198,10 +208,12 @@ def avg_day_by_month(date):
 # A3. Even it despite being an misspelled, it'll create as a new attribute called 'dya'
 # than raising an error (cause thats how it works), although if they try getting the "birthday.day"
 # since there is no attribute called 'day' it'll result in an error. ('birthday' object has no attribute 'day')
+# or it'll just get the attribute 'day' if it exist.
 
 # Q4. days_until should leave date1 unchanged. What would go wrong for
 #     the caller if it called increment_date on date1 directly?
 #
+# A4.
 
 
 if __name__ == "__main__":
