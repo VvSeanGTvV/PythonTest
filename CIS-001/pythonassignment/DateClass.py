@@ -28,7 +28,7 @@ class Date:
 
 # note: `pass` means "this function doesn't do anything". Remove it when you've
 #       written the function.
-secondsInDay = 86400
+secondsInDay = 86400 # seconds in a single day
 def make_date(year, month, day):
     """Makes a Date object with the given year, month, and day."""
     date = Date()
@@ -37,7 +37,7 @@ def make_date(year, month, day):
         date.month = int(month)
         date.day = int(day)
 
-        # We need a seconds acting as DATA, but this equation is NOT counting the Leap Years (since it breaks everything due to awkward increment
+        # We need a seconds acting as DATA, but this equation is NOT counting the Leap Years (since it breaks everything due to awkward increment)
         date.second = (int(day) * secondsInDay) + (int(month) * (avg_day_by_month(date) * secondsInDay)) + (int(year) * (get_all_days(date) * secondsInDay))
         return date
     except Exception as e:
@@ -100,13 +100,16 @@ def is_after(date1, date2):
 
 def increment_date(date):
     """Changes the date to the next day. Returns None."""
-    pass
+    date.day += 1
+    fix_format(date)
 
 
 def next_day(date):
     """Returns a new Date for the day after date. Doesn't change date."""
-    pass
-
+    new_date = copy(date)
+    new_date.day += 1
+    fix_format(new_date)
+    return new_date
 
 def days_until(date1, date2):
     """Returns how many days it takes to get from date1 to date2.
@@ -118,6 +121,36 @@ def days_until(date1, date2):
 
 
 # EXTRAS -for convenience sake
+def fix_format(date):
+    """Fixes the Date format to a proper valid date, otherwise throw an error when
+    it is unable to fix it."""
+    if (date.day < 1):
+        date.month -= 1
+        date.day = days_in_month(date)
+    
+    if (date.month < 1):
+        date.year -= 1
+        date.month = 12
+        date.day = days_in_month(date)
+    
+    if (date.day > days_in_month(date)):
+        date.day = 1
+        date.month += 1
+        
+    if (date.month > 12):
+        date.month = 1
+        date.year += 1
+    
+    if (date.year < 1):
+        date.year = 1
+    elif (date.year > 9999):
+        date.year = 9999
+    
+    if (not is_valid(date)):
+        raise ValueError("date not valid")
+    # Update the second for consistency
+    date.second = (int(date.day) * secondsInDay) + (int(date.month) * (avg_day_by_month(date) * secondsInDay)) + (int(date.year) * (get_all_days(date) * secondsInDay))
+
 def month_array(date, count_leap: bool = False): # mostly meant for the months in days
     return [31, 29 if (is_leap_year(date.year) and count_leap) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -139,7 +172,7 @@ def avg_day_by_month(date):
     c = get_all_days(date)
     c = c / len(month_array(date))
     return c
-
+    
 # Part 3: answer each question in the comments below it.
 
 # Q1. Predict what this prints, then run it to check. Explain the output.
@@ -173,14 +206,16 @@ def avg_day_by_month(date):
 
 if __name__ == "__main__":
     #UNIX = make_date(1970, 1, 1) <-- this was a temporary test calculation
-    today = make_date(2026, 10, 28)
-    tomorrow = make_date(2024, 2, 1)
+    today = make_date(2026, 12, 28)
+    tomorrow = make_date(2026, 12, 30)
     print_date(today)
 
     # TESTING FUNCTIONS
     print(is_leap_year(today.year))
     print(days_in_month(today))
-    print(days_until(today, today))
+    print(days_until(today, tomorrow))
     print(same_date(today, tomorrow))
     print(is_after(today, tomorrow))
     print(is_valid(today))
+    increment_date(today)
+    print_date(today)
