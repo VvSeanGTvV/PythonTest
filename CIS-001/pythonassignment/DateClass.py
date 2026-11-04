@@ -15,6 +15,7 @@ from copy import copy
 #           as with the Time class in the slides
 
 class Date:
+  # UNIX values but could also just set 1970 to 1
     year: int = 1970
     month: int = 1
     day: int = 1
@@ -39,10 +40,11 @@ def make_date(year, month, day):
 
         # We need a seconds acting as DATA, but this equation is NOT counting the Leap Years (since it breaks everything due to awkward increment)
         date.second = (int(day) * secondsInDay) + (int(month) * (avg_day_by_month(date) * secondsInDay)) + (int(year) * (get_all_days(date) * secondsInDay))
+        fix_format(date)
         return date
-    except Exception as e:
+    except Exception as e: #failsafe catch
         print(f"Failed to create Date due to: {e}")
-        return None
+        return Date() # use the UNIX default value instead
 
 def date_to_iso(date):
     """Returns the date in ISO form, YYYY-MM-DD, like '2026-03-07'."""
@@ -90,23 +92,23 @@ def is_valid(date):
 
 def same_date(date1, date2):
     """Returns True if the two dates have the same year, month, and day."""
-    return days_until(today, tomorrow) == 0
+    return days_until(today, tomorrow) == 0 # just use the days_until since they calculate by difference between two, and does return 0 when both are same
 
 
 def is_after(date1, date2):
     """Returns True if date1 comes later on the calendar than date2."""
-    return days_until(today, tomorrow) > 0
+    return days_until(today, tomorrow) > 0 # same as same_date(...) but now if it is more days than 0
 
 
 def increment_date(date):
     """Changes the date to the next day. Returns None."""
-    date.day += 1
+    date.day += 1 # just increase a day
     fix_format(date)
 
 
 def next_day(date):
     """Returns a new Date for the day after date. Doesn't change date."""
-    new_date = copy(date)
+    new_date = copy(date) # we make a copy and increase a day but never changes the original as we copied its value
     new_date.day += 1
     fix_format(new_date)
     return new_date
@@ -122,16 +124,20 @@ def days_until(date1, date2):
 
 # EXTRAS -for convenience sake
 def fix_format(date):
-    """Fixes the Date format to a proper valid date, otherwise throw an error when
+    """Fixes the date format to a proper valid date, otherwise throw an error when
     it is unable to fix it."""
+
+    # Added failsafe for sakes it goes over -1
     if (date.day < 1):
+        offset = -date.day
         date.month -= 1
-        date.day = days_in_month(date)
+        date.day = days_in_month(date) - offset
     
     if (date.month < 1):
+        offset = -date.month
         date.year -= 1
-        date.month = 12
-        date.day = days_in_month(date)
+        date.month = 12 - offset
+        date.day = days_in_month(date) 
     
     if (date.day > days_in_month(date)):
         date.day = 1
@@ -140,14 +146,16 @@ def fix_format(date):
     if (date.month > 12):
         date.month = 1
         date.year += 1
-    
+
+    # reuse the same year limits as 1 - 9999
     if (date.year < 1):
         date.year = 1
-    elif (date.year > 9999):
+    elif (date.year > 9999): 
         date.year = 9999
     
     if (not is_valid(date)):
-        raise ValueError("date not valid")
+        fix_format(date)
+        #raise ValueError("date no fix err")
     # Update the second for consistency
     date.second = (int(date.day) * secondsInDay) + (int(date.month) * (avg_day_by_month(date) * secondsInDay)) + (int(date.year) * (get_all_days(date) * secondsInDay))
 
@@ -195,12 +203,18 @@ def avg_day_by_month(date):
 # prints a is b (which is true), a is c (which is false as c is a new date with a copied value from a)
 #
 # A1 Explanation:
-# 
+# basically, since b is same object as a any changes to b affects to a
+# but, c is a copy of a (or in hindsight, c is basically a new date w/ copy values of a)
+# hence why a is b is true as they are the same object, while a is c is not the same object at all
 
 # Q2. same_date(x, y) can return True while x == y returns False.
 #     Give an example and explain why.
 #
-# A2.
+# A2. Two different object id despite having same value, likewise an example:
+# today = make_date(2026, 12, 30) => <__main__.Date object at 0x7e3bd5bd32c0> 
+# tomorrow = make_date(2026, 12, 30) => <__main__.Date object at 0x7e3bd5bd32f0>
+# Despite being the same date, the object id is not which is why today (x) == tomorrow (y) is false, unless you compared the values inside the date (today, tomorrow) rather than the variable itself
+# You could also do the days_until(...) function as techincally it does equal to 0 when they both have same date
 
 # Q3. Someone writes birthday.dya = 15 instead of birthday.day = 15.
 #     Python doesn't raise an error. Why not? How would the bug show up later?
@@ -218,7 +232,7 @@ def avg_day_by_month(date):
 
 if __name__ == "__main__":
     #UNIX = make_date(1970, 1, 1) <-- this was a temporary test calculation
-    today = make_date(2026, 12, 28)
+    today = make_date(2026, 12, 1)
     tomorrow = make_date(2026, 12, 30)
     print_date(today)
 
