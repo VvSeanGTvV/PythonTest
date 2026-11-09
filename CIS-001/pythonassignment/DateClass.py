@@ -227,7 +227,8 @@ def avg_day_by_month(date):
 # Q4. days_until should leave date1 unchanged. What would go wrong for
 #     the caller if it called increment_date on date1 directly?
 #
-# A4.
+# A4. If the days incremented date1 directly, it would modify its caller's original object, which in this function of days_until relying on date.second, it may
+# leave an inaccurate days counter, until the date.second is modified, otherwise it may lead unwanted effects, like today becomes the same value as tomorrow.
 
 
 if __name__ == "__main__":
