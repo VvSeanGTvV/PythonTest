@@ -64,9 +64,9 @@ if __name__ == "__main__":
   print(max(hand)) # __lt__
   print(Card(5, "hearts") < Card(5, "spades")) # __lt__
   print(Card(5, "spades") < Card(5, "hearts")) # __lt__
-  #c) Look at the last two lines. Neither card is less than the other, but with your __eq__ they aren’t equal either. Is that a problem for sorting a hand of cards? Why or why not?
-  # not really as it would just be like 1 red 1 black 2 red 2 black... etc.
-  # but then again it would be like a pattern of red and black rather than actually sorted w/ colors from red 1 -> 13 and black 1 -> 13
+  # c) No, as it would be like a pattern of likewise: 1 red 1 black, 2 red2 black, etc...
+  # Nonetheless it would be depends on preferences, like full red of 1 to 13 then full black 1 to 13,
+  # or just the pattern of 1 red 1 black... etc. Also it only compares by ranks, not the suits on __lt__
   
   #Problem 5: face cards
   print(Card(12, "hearts"))    # should print Q of hearts
